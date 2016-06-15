@@ -6,11 +6,10 @@ from itertools import chain, repeat
 
 # LED strip configuration:
 LED_COUNT      = 6       # Number of LED pixels.
-LED_PIN        = 18      # GPIO pin connected to the pixels (must support PWM!).
+LED_PIN        = 18      # GPIO pin connected to the pixels (must support PWM!)
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA        = 5       # DMA channel to use for generating signal (try 5)
 LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
-LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 
 # Define functions which animate LEDs in various ways.
 def setColors(strip, colors):
@@ -21,13 +20,18 @@ def setColors(strip, colors):
 def hexToRgb(value):
 	value = value.lstrip('#')
 	lv = len(value)
-	colors = list(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
-	# Fix for GRB colors
-	return Color(colors[1], colors[0], colors[2])
+	return Color(*(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3)))
 
 def main(colors):
 	# Create NeoPixel object with appropriate configuration.
-	strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+	strip = Adafruit_NeoPixel(LED_COUNT,
+		LED_PIN,
+		LED_FREQ_HZ,
+		LED_DMA,
+		False, # invert signal
+		LED_BRIGHTNESS,
+		0, # channel (default 0)
+		ws.WS2811_STRIP_GRB)
 
 	# Intialize the library (must be called once before other functions).
 	strip.begin()
